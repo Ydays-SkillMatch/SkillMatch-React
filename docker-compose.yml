@@ -1,0 +1,11 @@
+services:
+  skillmatch-react:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # environment:
+    # -
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/skillmatch-react/"
