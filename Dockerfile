@@ -4,10 +4,9 @@ WORKDIR /SkillMatch/SkillMatch-React/
 
 COPY yarn.lock package.json ./
 RUN yarn install
-COPY . .
 
 #RUN npx next build
 EXPOSE 3000
 
 #TODO: change to prod
-CMD ["yarn", "dev"]
+# CMD ["yarn", "dev"]
