@@ -8,4 +8,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ".:/skillmatch-react/"
+      - ".:/SkillMatch/SkillMatch-React/"
