@@ -1,22 +1,38 @@
 export default function LoginPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <div className="bg-white rounded-2xl shadow-2xl flex w-2/3 max-w-4xl"></div>
-        {/*Sign In Section*/}
-        <div className="w-3/5 p-5">
-          <p>Sign In Section</p>
-        </div>
-
-        {/*Sign Up Section*/}
-        <div className="w-2/5 bg-green-500 text-white rounded-tr-2xl">
-          <h2 className="text-3xl font-bold mb-2">Hello, friend !</h2>
-          <div className="border-2 w-10 border-white inline-block mb-2"></div>
-          <p className="mb-10">LA BITE DE CON LA</p>
-          <a
-            href="#"
-            className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white"
-          ></a>
+    <div className="flex flex-col items-center w-full justify-center min-h-screen bg-gray-100">
+      <main className="flex flex-col items-center justify-center w-full px-6 text-center">
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center w-full max-w-md">
+          <div className="w-full p-8">
+            <div className="text-center font-bold ">
+              <span className="text-green-500">Skill</span> Match
+            </div>
+            <h2 className="text-3xl font-bold text-green-500 mb-4">
+              Sign In
+            </h2>
+            <div className="border-2 w-10 border-green-500 inline-block mb-4"></div>
+            <p className="text-gray-400 mb-6">Email Account</p>
+            <div className="mb-4">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="bg-gray-100 w-full p-2 rounded-md outline-none text-sm"
+              />
+            </div>
+            <p className="text-gray-400 mb-6">Password</p>
+            <div className="mb-4">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="bg-gray-100 w-full p-2 rounded-md outline-none text-sm"
+              />
+            </div>
+            <button className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 w-full">
+              Sign In
+            </button>
+          </div>
         </div>
       </main>
     </div>
