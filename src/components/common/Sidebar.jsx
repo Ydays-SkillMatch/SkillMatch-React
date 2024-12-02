@@ -1,6 +1,6 @@
 "use client";
 import { Book, Home, Menu, Settings, TrendingUp, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useURL } from "@/hooks";
 import Link from "next/link";
@@ -26,7 +26,8 @@ const SIDEBAR_ITEMS = [
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const url = useURL();
-  if (url.includes("login")) return <></>;
+  console.log(url);
+  if (url.includes("/login")) return <></>;
   return (
     <motion.div
       className={`relative z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
