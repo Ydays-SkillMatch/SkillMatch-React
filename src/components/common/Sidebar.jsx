@@ -26,8 +26,7 @@ const SIDEBAR_ITEMS = [
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const url = useURL();
-  console.log(url);
-  if (url.includes("/login")) return <></>;
+  if (!url || url?.includes("/login")) return <></>;
   return (
     <motion.div
       className={`relative z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
