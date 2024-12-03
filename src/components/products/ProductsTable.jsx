@@ -12,16 +12,69 @@ const PRODUCT_DATA = [
 
 const ProductsTable = () => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
+	const [products, setProducts] = useState(PRODUCT_DATA); // État des produits
+	const [filteredProducts, setFilteredProducts] = useState(products); // État des produits filtrés
+	const [isModalOpen, setIsModalOpen] = useState(false); // État pour la pop-up
+	const [selectedProduct, setSelectedProduct] = useState(null); // État pour le produit sélectionné
 
+	// Form state for editing product data
+	const [editedProduct, setEditedProduct] = useState({
+		id: 0,
+		name: "",
+		category: "",
+		time: 0,
+		stock: 0,
+		sales: 0,
+	});
+
+	// Fonction de recherche
 	const handleSearch = (e) => {
 		const term = e.target.value.toLowerCase();
 		setSearchTerm(term);
-		const filtered = PRODUCT_DATA.filter(
+		const filtered = products.filter(
 			(product) => product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
 		);
-
 		setFilteredProducts(filtered);
+	};
+
+	// Fonction pour ouvrir la pop-up et initialiser les données à modifier
+	const handleEditClick = (product) => {
+		setSelectedProduct(product);
+		setEditedProduct({ ...product }); // Initialiser les données du produit pour l'édition
+		setIsModalOpen(true);
+	};
+
+	// Fonction pour fermer la pop-up
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedProduct(null);
+		setEditedProduct({
+			id: 0,
+			name: "",
+			category: "",
+			time: 0,
+			stock: 0,
+			sales: 0,
+		});
+	};
+
+	// Fonction pour gérer les changements dans les champs de formulaire
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setEditedProduct({
+			...editedProduct,
+			[name]: value,
+		});
+	};
+
+	// Fonction pour sauvegarder les modifications
+	const handleSaveChanges = () => {
+		const updatedProducts = products.map((product) =>
+			product.id === editedProduct.id ? editedProduct : product
+		);
+		setProducts(updatedProducts); // Mettre à jour la liste des produits dans l'état global
+		setFilteredProducts(updatedProducts); // Mettre à jour la liste des produits filtrés
+		handleCloseModal(); // Fermer la pop-up après sauvegarde
 	};
 
 	return (
@@ -31,6 +84,7 @@ const ProductsTable = () => {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: 0.2 }}
 		>
+			{/* Recherche */}
 			<div className='flex justify-between items-center mb-6'>
 				<h2 className='text-xl font-semibold text-gray-100'>Liste Exercices</h2>
 				<div className='relative'>
@@ -45,6 +99,7 @@ const ProductsTable = () => {
 				</div>
 			</div>
 
+			{/* Table */}
 			<div className='overflow-x-auto'>
 				<table className='min-w-full divide-y divide-gray-700'>
 					<thead>
@@ -97,7 +152,10 @@ const ProductsTable = () => {
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.stock}</td>
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.sales}</td>
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									<button className='text-indigo-400 hover:text-indigo-300 mr-2'>
+									<button
+										className='text-indigo-400 hover:text-indigo-300 mr-2'
+										onClick={() => handleEditClick(product)} // ouvrir la pop-up avec le produit sélectionné
+									>
 										<Edit size={18} />
 									</button>
 									<button className='text-red-400 hover:text-red-300'>
@@ -109,7 +167,98 @@ const ProductsTable = () => {
 					</tbody>
 				</table>
 			</div>
+
+			{/* Pop-up */}
+			{isModalOpen && (
+				<motion.div
+					className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.3 }}
+				>
+					<div className='bg-gray-800 p-6 rounded-lg shadow-lg max-w-3xl w-full'>
+						<h2 className='text-2xl font-semibold text-gray-100 mb-4'>Editer Exercice</h2>
+						{/* Formulaire de modification */}
+						<div className='space-y-4'>
+							<div>
+								<label className='block text-gray-300' htmlFor='name'>
+									Nom
+								</label>
+								<input
+									id='name'
+									name='name'
+									type='text'
+									value={editedProduct.name}
+									onChange={handleChange}
+									className='w-full bg-gray-700 text-white rounded-lg p-2'
+								/>
+							</div>
+							<div>
+								<label className='block text-gray-300' htmlFor='category'>
+									Catégorie
+								</label>
+								<input
+									id='category'
+									name='category'
+									type='text'
+									value={editedProduct.category}
+									onChange={handleChange}
+									className='w-full bg-gray-700 text-white rounded-lg p-2'
+								/>
+							</div>
+							<div>
+								<label className='block text-gray-300' htmlFor='time'>
+									Time
+								</label>
+								<input
+									id='time'
+									name='time'
+									type='number'
+									value={editedProduct.time}
+									onChange={handleChange}
+									className='w-full bg-gray-700 text-white rounded-lg p-2'
+								/>
+							</div>
+							<div>
+								<label className='block text-gray-300' htmlFor='stock'>
+									Stock
+								</label>
+								<input
+									id='stock'
+									name='stock'
+									type='number'
+									value={editedProduct.stock}
+									onChange={handleChange}
+									className='w-full bg-gray-700 text-white rounded-lg p-2'
+								/>
+							</div>
+							<div>
+								<label className='block text-gray-300' htmlFor='sales'>
+									Ventes
+								</label>
+								<input
+									id='sales'
+									name='sales'
+									type='number'
+									value={editedProduct.sales}
+									onChange={handleChange}
+									className='w-full bg-gray-700 text-white rounded-lg p-2'
+								/>
+							</div>
+							<div className='mt-6 flex justify-between'>
+								<button onClick={handleSaveChanges} className='text-white bg-blue-600 px-6 py-2 rounded-lg'>
+									Sauvegarder
+								</button>
+								<button onClick={handleCloseModal} className='text-white bg-red-600 px-6 py-2 rounded-lg'>
+									Annuler
+								</button>
+							</div>
+						</div>
+					</div>
+				</motion.div>
+			)}
 		</motion.div>
 	);
 };
+
 export default ProductsTable;
