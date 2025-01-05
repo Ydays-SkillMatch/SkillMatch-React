@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const useURL = () => {
+const useURL = () => {
   const [url, setURL] = useState(null);
 
   useEffect(() => {
@@ -9,3 +9,5 @@ export const useURL = () => {
 
   return url;
 };
+
+export default useURL;

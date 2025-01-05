@@ -22,9 +22,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen h-fit w-screen bg-gray-800 overflow-x-hidden`}
       >
         <Sidebar />
+        <div className="w-20"></div>
         {children}
       </body>
     </html>
