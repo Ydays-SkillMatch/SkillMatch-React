@@ -9,6 +9,9 @@ const dataOrg1 = new Map([
           id: 1,
           title: "FizzBuzz",
           description: "FizzBuzz",
+          defaultCode: `function FizzBuzz(n) {
+    // Ecrivez votre code ici
+}`,
           markdown:
             "L'objectif de cet exercices est d'écrire un programme qui pour n'importe quelle nombre renvoie le nombre sauf pour les exceptions suivante:" +
             "\n" +
@@ -17,10 +20,10 @@ const dataOrg1 = new Map([
             "- Pour les multiples de 3 et 5, on renvoie **'FizzBuzz'** à la place du nombre.",
           difficulty: 1,
           test: [
-            { title: "Test 1", input: 1, output: 1 },
-            { title: "Test 2", input: 3, output: "Fizz" },
-            { title: "Test 3", input: 5, output: "Buzz" },
-            { title: "Test 4", input: 15, output: "FizzBuzz" },
+            { id: 0, title: "Test 1", input: 1, expected: 1 },
+            { id: 1, title: "Test 2", input: 3, expected: "Fizz" },
+            { id: 2, title: "Test 3", input: 5, expected: "Buzz" },
+            { id: 3, title: "Test 4", input: 15, expected: "FizzBuzz" },
           ],
           tags: ["string", "loop"],
         },
@@ -41,7 +44,7 @@ const dataOrg1 = new Map([
   ],
 ]);
 
-const data = new Array({ id: 0, tests: dataOrg1 });
+export const data = new Array({ id: 0, tests: dataOrg1 });
 
 export const GET = (req, { params }) => {
   const { orgId, language } = params;

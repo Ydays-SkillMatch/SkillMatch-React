@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { useExercices } from "@/hooks";
+import { useCodeVerification, useExercices } from "@/hooks";
 import Markdown from "react-markdown";
 
 // Charger Monaco Editor uniquement côté client
@@ -12,8 +12,17 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 export default function Page() {
   const [exercises, setExercises] = useState([]);
   const [selectedExercise, setSelectedExercise] = useState([]);
-  const [code, setCode] = useState("// Code lié à l'exercices sélectionné");
   const { getExercices, isLoading } = useExercices();
+  const {
+    isLoading: isTesting,
+    verifyCode,
+    setCode,
+    code,
+    setError,
+    result,
+    setResult,
+    error,
+  } = useCodeVerification();
 
   useEffect(() => {
     getExercices(0, "js").then((data) => {
@@ -22,6 +31,39 @@ export default function Page() {
     });
   }, [getExercices]);
 
+  useEffect(() => {
+    setCode(selectedExercise?.defaultCode);
+  }, [selectedExercise?.defaultCode]);
+
+  useEffect(() => {
+    try {
+      if (result?.success) {
+        const updatedExercise = {
+          ...selectedExercise,
+          test: result?.testPassed,
+        };
+        setSelectedExercise(updatedExercise);
+      }
+      if (result?.success === false) {
+        const updatedTest = selectedExercise.test.map((test, i) => {
+          const err = JSON.parse(error);
+          if (i < err?.testIndex) return { ...test, passed: true };
+          if (i === err?.testIndex) return { ...test, passed: false };
+          return test;
+        });
+        setSelectedExercise({ ...selectedExercise, test: updatedTest });
+      }
+    } catch (error) {}
+  }, [error, result, setError]);
+
+  const handleCodeSubmit = () => {
+    setError(null);
+    verifyCode(0, "js", selectedExercise.id, selectedExercise.title).then(
+      () => {
+        console.log("Code vérifié");
+      },
+    );
+  };
   return (
     <div className={"flex p-4 min-h-full w-full flex-col"}>
       <div className={`flex h-[80%] max-h-[80%] w-full`}>
@@ -45,6 +87,14 @@ export default function Page() {
             automaticLayout: true,
           }}
         />
+      </div>
+      {/* bouton de validation */}
+      <div className={"flex justify-end p-2"}>
+        <div className={"flex w-fit rounded-xl bg-gray-900 p-2"}>
+          <button onClick={handleCodeSubmit} className={"flex"}>
+            Soumettre mon code
+          </button>
+        </div>
       </div>
 
       {/* Liste des exercices */}
@@ -70,7 +120,7 @@ export default function Page() {
                   }}
                   onClick={() => {
                     setSelectedExercise(exercise);
-                    setCode(`// Code pour ${exercise.title}`);
+                    setCode(exercise.defaultCode);
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor = "#f0f0f0")
@@ -86,6 +136,23 @@ export default function Page() {
         </div>
         {!isLoading && (
           <div className={`flex h-fit flex-col w-[50%] p-4`}>
+            {!error && isTesting && (
+              <p className={"text-green-500"}>Test en cours...</p>
+            )}
+            {error && (
+              <div className={"flex flex-col"}>
+                <p className={"text-red-500"}>
+                  entree: {JSON.parse(error)?.input}
+                </p>
+                <p className={"text-red-500"}>
+                  attendu: {JSON.parse(error)?.expected}
+                </p>
+                <p className={"text-red-500"}>
+                  recu: {JSON.parse(error)?.result}
+                </p>
+              </div>
+            )}
+
             <h3>Liste des tests</h3>
             <ul
               style={{
@@ -96,11 +163,18 @@ export default function Page() {
             >
               {selectedExercise?.test?.map((test) => (
                 <li
-                  key={test.id}
+                  key={`${selectedExercise.id}-${test.id}`}
                   style={{
                     padding: "10px",
                     borderBottom: "1px solid #eee",
                   }}
+                  className={
+                    test?.passed
+                      ? "text-green-500"
+                      : test.passed !== undefined
+                        ? "text-red-500"
+                        : "text-white"
+                  }
                 >
                   {test.title}
                 </li>
