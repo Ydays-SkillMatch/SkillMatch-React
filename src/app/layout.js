@@ -25,7 +25,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen h-fit w-screen bg-gray-800 overflow-x-hidden`}
       >
         <Sidebar />
-        <div className="w-20"></div>
         {children}
       </body>
     </html>

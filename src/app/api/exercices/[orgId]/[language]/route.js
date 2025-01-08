@@ -27,8 +27,43 @@ const dataOrg1 = new Map([
           ],
           tags: ["string", "loop"],
         },
-        { id: 2, title: "Palindrome" },
-        { id: 3, title: "Factorielle" },
+        {
+          id: 2,
+          title: "Palindrome",
+          description: "Palindrome",
+          defaultCode:
+            "function Palindrome(n) {" +
+            "\n" +
+            "    // Ecrivez votre code ici" +
+            "\n" +
+            "}",
+          markdown:
+            "L'objectif de cet exercices est d'écrire un programme qui pour n'importe quelle nombre renvoie **true** si le mot est un palindrome et **false** sinon.",
+          difficulty: 1,
+          test: [
+            { id: 0, title: "Test 1", input: "kayak", expected: true },
+            { id: 1, title: "Test 2", input: "hello", expected: false },
+            { id: 2, title: "Test 3", input: "radar", expected: true },
+            { id: 3, title: "Test 4", input: "world", expected: false },
+          ],
+        },
+        {
+          id: 3,
+          title: "Factorielle",
+          description: "Factorielle",
+          defaultCode: `function Factorielle(n) {
+    // Ecrivez votre code ici
+}`,
+          markdown:
+            "L'objectif de cet exercices est d'écrire un programme qui pour n'importe quelle nombre renvoie le factorielle de ce nombre.",
+          difficulty: 1,
+          test: [
+            { id: 0, title: "Test 1", input: 1, expected: 1 },
+            { id: 1, title: "Test 2", input: 3, expected: 6 },
+            { id: 2, title: "Test 3", input: 5, expected: 120 },
+            { id: 3, title: "Test 4", input: 10, expected: 3628800 },
+          ],
+        },
       ],
     },
   ],
