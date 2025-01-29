@@ -116,18 +116,20 @@ export default function Page() {
                     padding: "10px",
                     borderBottom: "1px solid #eee",
                     cursor: "pointer",
-                    transition: "background-color 0.2s",
+                    transition: "background-color 0.2s, color 0.2s",
                   }}
                   onClick={() => {
                     setSelectedExercise(exercise);
                     setCode(exercise.defaultCode);
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#f0f0f0")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "transparent")
-                  }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f0f0f0";
+                    e.currentTarget.style.color = "black";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "inherit";
+                  }}
                 >
                   {exercise.title}
                 </li>
