@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies"; 
+import { setCookie } from 'cookies-next';
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -52,15 +52,16 @@ export default function Page() {
                   },
                   body: JSON.stringify({ email, password }),
                 })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log(data);
-                    if (data?.status?.code === 200) {
-                      setCookie(null, "SkillMatchToken", data.token, {
-                        path: "/",
-                      });
+                  .then((response) => { 
+                    console.log("Status :", response.status)
+                    if (response.status === 200) {
                       router.push("/exercices");
                     }
+                    return response.json()
+                  })
+                  .then((response) => {
+                    console.log(response);
+                    setCookie("SkillMatchToken", response.access)
                   });
               }}
               className="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 w-full"

@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 
 export function middleware(request) {
 //TODO(Az3r1y)
-  const cookie= request.cookies.has('nextjs')
+  const cookie= request.cookies.has('SkillMatchToken')
 
-  // if ( !cookie && !request.url.includes("/login") ) {
-  //   return NextResponse.redirect(new URL('/login', request.url))
-  // }
+   if ( !cookie && !request.url.includes("/login") ) {
+    return NextResponse.redirect(new URL('/login', request.url))
+   }
 }
 
 export const config = {
