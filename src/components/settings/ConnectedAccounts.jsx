@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SettingSection from "./SettingSection";
 import { HelpCircle, Plus } from "lucide-react";
+import Image from "next/image";
 
 const ConnectedAccounts = () => {
   const [connectedAccounts, setConnectedAccounts] = useState([
@@ -31,7 +32,7 @@ const ConnectedAccounts = () => {
           className="flex items-center justify-between py-3"
         >
           <div className="flex gap-1">
-            <img
+            <Image
               src={account.icon}
               alt="Social img"
               className="size-6 object-cover rounded-full mr-2"

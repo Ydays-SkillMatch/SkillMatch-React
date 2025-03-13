@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const Header = ({ title }) => {
   return (
     <header className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border-b border-gray-700">
@@ -5,16 +7,16 @@ const Header = ({ title }) => {
         <h1 className="text-2xl font-semibold text-gray-100">{title}</h1>
 
         <div className="flex items-center">
-          <img
+          <Image
             src="https://randomuser.me/api/portraits/men/3.jpg"
             alt="Profile"
-            className="rounded-full w-8 h-8 object-cover mr-2" // Taille réduite
+            width={32}
+            height={32}
+            className="rounded-full object-cover mr-2"
           />
           <div>
-            <h3 className="text-sm font-semibold text-gray-100">John Doe</h3>{" "}
-            {/* Taille du texte réduite */}
-            <p className="text-xs text-gray-400">john.doe@example.com</p>{" "}
-            {/* Taille du texte réduite */}
+            <h3 className="text-sm font-semibold text-gray-100">John Doe</h3>
+            <p className="text-xs text-gray-400">john.doe@example.com</p>
           </div>
         </div>
       </div>

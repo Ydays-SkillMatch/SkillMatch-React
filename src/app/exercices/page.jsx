@@ -33,16 +33,15 @@ export default function Page() {
 
   useEffect(() => {
     setCode(selectedExercise?.defaultCode);
-  }, [selectedExercise?.defaultCode]);
+  }, [selectedExercise?.defaultCode, setCode]);
 
   useEffect(() => {
     try {
       if (result?.success) {
-        const updatedExercise = {
-          ...selectedExercise,
+        setSelectedExercise((prev) => ({
+          ...prev,
           test: result?.testPassed,
-        };
-        setSelectedExercise(updatedExercise);
+        }));
       }
       if (result?.success === false) {
         const updatedTest = selectedExercise.test.map((test, i) => {
@@ -51,10 +50,10 @@ export default function Page() {
           if (i === err?.testIndex) return { ...test, passed: false };
           return test;
         });
-        setSelectedExercise({ ...selectedExercise, test: updatedTest });
+        setSelectedExercise((prev) => ({ ...prev, test: updatedTest }));
       }
     } catch (error) {}
-  }, [error, result, setError]);
+  }, [error, result, setError, selectedExercise]);
 
   const handleCodeSubmit = () => {
     setError(null);

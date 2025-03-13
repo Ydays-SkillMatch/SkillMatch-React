@@ -1,13 +1,54 @@
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 const EXERCISE_DATA = [
-  { id: 1, name: "Exercice 1", category: "Math", time: 60, assignedUsers: [], statement: "", results: "" },
-  { id: 2, name: "Exercice 2", category: "Dev", time: 1, assignedUsers: [], statement: "", results: "" },
-  { id: 3, name: "Exercice 3", category: "PHP", time: 30, assignedUsers: [], statement: "", results: "" },
-  { id: 4, name: "Exercice 4", category: "MEKANIK", time: 25, assignedUsers: [], statement: "", results: "" },
-  { id: 5, name: "Exercice 5", category: "SS", time: 80, assignedUsers: [], statement: "", results: "" },
+  {
+    id: 1,
+    name: "Exercice 1",
+    category: "Math",
+    time: 60,
+    assignedUsers: [],
+    statement: "",
+    results: "",
+  },
+  {
+    id: 2,
+    name: "Exercice 2",
+    category: "Dev",
+    time: 1,
+    assignedUsers: [],
+    statement: "",
+    results: "",
+  },
+  {
+    id: 3,
+    name: "Exercice 3",
+    category: "PHP",
+    time: 30,
+    assignedUsers: [],
+    statement: "",
+    results: "",
+  },
+  {
+    id: 4,
+    name: "Exercice 4",
+    category: "MEKANIK",
+    time: 25,
+    assignedUsers: [],
+    statement: "",
+    results: "",
+  },
+  {
+    id: 5,
+    name: "Exercice 5",
+    category: "SS",
+    time: 80,
+    assignedUsers: [],
+    statement: "",
+    results: "",
+  },
 ];
 
 const USER_DATA = [
@@ -40,7 +81,7 @@ const ExercisesTable = () => {
     const filtered = exercises.filter(
       (exercise) =>
         exercise.name.toLowerCase().includes(term) ||
-        exercise.category.toLowerCase().includes(term)
+        exercise.category.toLowerCase().includes(term),
     );
     setFilteredExercises(filtered);
   };
@@ -54,7 +95,15 @@ const ExercisesTable = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedExercise(null);
-    setEditedExercise({ id: 0, name: "", category: "", time: 0, assignedUsers: [], statement: "", results: "" });
+    setEditedExercise({
+      id: 0,
+      name: "",
+      category: "",
+      time: 0,
+      assignedUsers: [],
+      statement: "",
+      results: "",
+    });
   };
 
   const handleChange = (e) => {
@@ -64,7 +113,7 @@ const ExercisesTable = () => {
 
   const handleSaveChanges = () => {
     const updatedExercises = exercises.map((exercise) =>
-      exercise.id === editedExercise.id ? editedExercise : exercise
+      exercise.id === editedExercise.id ? editedExercise : exercise,
     );
     setExercises(updatedExercises);
     setFilteredExercises(updatedExercises);
@@ -88,7 +137,9 @@ const ExercisesTable = () => {
       transition={{ delay: 0.2 }}
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-100">Liste des Exercices</h2>
+        <h2 className="text-xl font-semibold text-gray-100">
+          Liste des Exercices
+        </h2>
         <div className="relative">
           <input
             type="text"
@@ -128,10 +179,12 @@ const ExercisesTable = () => {
                 transition={{ duration: 0.3 }}
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100 flex gap-2 items-center">
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww"
                     alt="Exercice img"
-                    className="size-10 rounded-full"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
                   />
                   {exercise.name}
                 </td>
@@ -167,7 +220,9 @@ const ExercisesTable = () => {
         >
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-h-[90vh] flex border border-gray-600">
             <div className="flex-1 flex flex-col pl-6 w-full overflow-hidden pr-6">
-              <h2 className="text-2xl font-semibold text-gray-100 mb-4">Éditer l'Exercice</h2>
+              <h2 className="text-2xl font-semibold text-gray-100 mb-4">
+                Éditer l&apos;Exercice
+              </h2>
 
               <div className="flex-1 overflow-y-auto space-y-4 pr-3">
                 <div>
@@ -227,7 +282,7 @@ const ExercisesTable = () => {
 
                 <div>
                   <label className="block text-gray-300" htmlFor="input">
-                    Valeur d'entré
+                    Valeur d&apos;entré
                   </label>
                   <textarea
                     id="input"
@@ -252,7 +307,9 @@ const ExercisesTable = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-300">Assigner des Utilisateurs</label>
+                  <label className="block text-gray-300">
+                    Assigner des Utilisateurs
+                  </label>
                   {USER_DATA.map((user) => (
                     <div key={user.id} className="flex items-center mt-2">
                       <input
@@ -262,7 +319,10 @@ const ExercisesTable = () => {
                         onChange={() => handleUserAssignment(user.id)}
                         className="mr-2"
                       />
-                      <label htmlFor={`user-${user.id}`} className="text-gray-300">
+                      <label
+                        htmlFor={`user-${user.id}`}
+                        className="text-gray-300"
+                      >
                         {user.name}
                       </label>
                     </div>

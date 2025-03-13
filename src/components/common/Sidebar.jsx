@@ -6,7 +6,7 @@ import { useURL } from "@/hooks";
 import Link from "next/link";
 
 const SIDEBAR_ITEMS = [
-  { name: "Accueil", icon: Home, color: "#6366f1", href: "/overview",},
+  { name: "Accueil", icon: Home, color: "#6366f1", href: "/overview" },
   { name: "Exercices", icon: Book, color: "#8B5CF6", href: "/listexercices" },
   { name: "Utilisateurs", icon: Users, color: "#EC4899", href: "/users" },
   { name: "Paramètres", icon: Settings, color: "#6EE7B7", href: "/settings" },

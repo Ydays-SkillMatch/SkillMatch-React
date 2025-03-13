@@ -17,7 +17,6 @@
     "lucide-react": "^0.456.0",
     "motion": "^11.11.14",
     "next": "^14.2.24",
-    "prettier": "^3.4.2",
     "react": "^18",
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
