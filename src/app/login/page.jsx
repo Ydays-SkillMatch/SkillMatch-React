@@ -1,12 +1,38 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie } from 'cookies-next';
+import { setCookie } from "cookies-next";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(process.env.API_URL + "/api/auth/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log("Status :", response.status);
+      if (response.status === 200) {
+        const data = await response.json();
+        setCookie("SkillMatchToken", data.access);
+        router.push("/exercices");
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.detail || "Invalid email or password");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <div className="flex flex-col items-center w-full justify-center min-h-screen ">
@@ -21,6 +47,9 @@ export default function Page() {
               Connexion
             </h2>
             <div className="border-2 w-10 border-gray-800 inline-block mb-4"></div>
+            {errorMessage && (
+              <p className="text-red-500 mb-6">{errorMessage}</p>
+            )}
             <p className="text-white mb-6">Email</p>
             <div className="mb-4 bg-gray-800">
               <input
@@ -43,27 +72,7 @@ export default function Page() {
             </div>
             <button
               type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                fetch(process.env.API_URL + "/api/auth/login/", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ email, password }),
-                })
-                  .then((response) => { 
-                    console.log("Status :", response.status)
-                    if (response.status === 200) {
-                      router.push("/exercices");
-                    }
-                    return response.json()
-                  })
-                  .then((response) => {
-                    console.log(response);
-                    setCookie("SkillMatchToken", response.access)
-                  });
-              }}
+              onClick={handleLogin}
               className="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 w-full"
             >
               Connexion{" "}

@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
-import { Edit, Search, Trash2, Plus } from "lucide-react";
+import { Edit, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 const EXERCISE_DATA = [
-  { id: 1, name: "Exercice 1", category: "Math", time: 60, assignedUsers: [] },
-  { id: 2, name: "Exercice 2", category: "Dev", time: 1, assignedUsers: [] },
-  { id: 3, name: "Exercice 3", category: "PHP", time: 30, assignedUsers: [] },
-  { id: 4, name: "Exercice 4", category: "MEKANIK", time: 25, assignedUsers: [] },
-  { id: 5, name: "Exercice 5", category: "SS", time: 80, assignedUsers: [] },
+  { id: 1, name: "Exercice 1", category: "Math", time: 60, assignedUsers: [], statement: "", results: "" },
+  { id: 2, name: "Exercice 2", category: "Dev", time: 1, assignedUsers: [], statement: "", results: "" },
+  { id: 3, name: "Exercice 3", category: "PHP", time: 30, assignedUsers: [], statement: "", results: "" },
+  { id: 4, name: "Exercice 4", category: "MEKANIK", time: 25, assignedUsers: [], statement: "", results: "" },
+  { id: 5, name: "Exercice 5", category: "SS", time: 80, assignedUsers: [], statement: "", results: "" },
 ];
 
 const USER_DATA = [
@@ -30,6 +30,8 @@ const ExercisesTable = () => {
     category: "",
     time: 0,
     assignedUsers: [],
+    statement: "",
+    results: "",
   });
 
   const handleSearch = (e) => {
@@ -52,7 +54,7 @@ const ExercisesTable = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedExercise(null);
-    setEditedExercise({ id: 0, name: "", category: "", time: 0, assignedUsers: [] });
+    setEditedExercise({ id: 0, name: "", category: "", time: 0, assignedUsers: [], statement: "", results: "" });
   };
 
   const handleChange = (e) => {
@@ -91,7 +93,7 @@ const ExercisesTable = () => {
           <input
             type="text"
             placeholder="Rechercher des exercices..."
-            className="bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full box-border"
             onChange={handleSearch}
             value={searchTerm}
           />
@@ -163,7 +165,7 @@ const ExercisesTable = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-h-[90vh] flex">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-h-[90vh] flex border border-gray-600">
             <div className="flex-1 flex flex-col pl-6 w-full overflow-hidden pr-6">
               <h2 className="text-2xl font-semibold text-gray-100 mb-4">Éditer l'Exercice</h2>
 
@@ -178,7 +180,7 @@ const ExercisesTable = () => {
                     type="text"
                     value={editedExercise.name}
                     onChange={handleChange}
-                    className="w-[calc(100%-0.75rem)] bg-gray-700 text-white rounded-lg p-2"
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 box-border"
                   />
                 </div>
 
@@ -192,7 +194,7 @@ const ExercisesTable = () => {
                     type="text"
                     value={editedExercise.category}
                     onChange={handleChange}
-                    className="w-[calc(100%-0.75rem)] bg-gray-700 text-white rounded-lg p-2"
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 box-border"
                   />
                 </div>
 
@@ -206,7 +208,46 @@ const ExercisesTable = () => {
                     type="number"
                     value={editedExercise.time}
                     onChange={handleChange}
-                    className="w-[calc(100%-0.75rem)] bg-gray-700 text-white rounded-lg p-2"
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 box-border"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300" htmlFor="statement">
+                    Énoncé
+                  </label>
+                  <textarea
+                    id="statement"
+                    name="statement"
+                    value={editedExercise.statement}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 h-24 box-border"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300" htmlFor="input">
+                    Valeur d'entré
+                  </label>
+                  <textarea
+                    id="input"
+                    name="input"
+                    value={editedExercise.input}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 h-24 box-border"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300" htmlFor="results">
+                    Résultats
+                  </label>
+                  <textarea
+                    id="results"
+                    name="results"
+                    value={editedExercise.results}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700 text-white rounded-lg p-2 h-24 box-border"
                   />
                 </div>
 
