@@ -1,189 +1,168 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useCodeVerification, useExercices } from "@/hooks";
-import Markdown from "react-markdown";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getCookie } from 'cookies-next';
+import useExercices from "@/hooks/useExercices";
 
-// Charger Monaco Editor uniquement côté client
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
-  ssr: false,
-});
-
-export default function Page() {
+export default function ExercicesList() {
   const [exercises, setExercises] = useState([]);
-  const [selectedExercise, setSelectedExercise] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const { getExercices, isLoading } = useExercices();
-  const {
-    isLoading: isTesting,
-    verifyCode,
-    setCode,
-    code,
-    setError,
-    result,
-    setResult,
-    error,
-  } = useCodeVerification();
+  
+  const defaultOrgId = 0; 
+  const defaultLanguage = "js";
 
   useEffect(() => {
-    getExercices(0, "js").then((data) => {
-      setExercises(data.exercices);
-      setSelectedExercise(data.exercices[0]);
-    });
-  }, [getExercices]);
+    // Vérification de l'authentification
+    const token = getCookie('SkillMatchToken');
+    if (!token) {
+      router.push('/');
+      return;
+    }
 
-  useEffect(() => {
-    setCode(selectedExercise?.defaultCode);
-  }, [selectedExercise?.defaultCode, setCode]);
-
-  useEffect(() => {
-    try {
-      if (result?.success) {
-        setSelectedExercise((prev) => ({
-          ...prev,
-          test: result?.testPassed,
-        }));
+    // Chargement des exercices
+    const fetchExercises = async () => {
+      try {
+        const data = await getExercices(defaultOrgId, defaultLanguage);
+        if (data && data.exercices) {
+          // Ajouter dates d'échéance fictives pour la démonstration
+          const now = new Date();
+          const exercisesWithDates = data.exercices.map((ex, index) => ({
+            ...ex,
+            dueDate: new Date(now.getTime() + (index + 1) * 3 * 24 * 60 * 60 * 1000).toISOString(),
+            organization: "SkillMatch Academy"
+          }));
+          
+          const sortedExercises = exercisesWithDates.sort((a, b) => 
+            new Date(a.dueDate) - new Date(b.dueDate)
+          );
+          
+          setExercises(sortedExercises);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des exercices:", error);
+      } finally {
+        setLoading(false);
       }
-      if (result?.success === false) {
-        const updatedTest = selectedExercise.test.map((test, i) => {
-          const err = JSON.parse(error);
-          if (i < err?.testIndex) return { ...test, passed: true };
-          if (i === err?.testIndex) return { ...test, passed: false };
-          return test;
-        });
-        setSelectedExercise((prev) => ({ ...prev, test: updatedTest }));
-      }
-    } catch (error) {}
-  }, [error, result, setError, selectedExercise]);
+    };
 
-  const handleCodeSubmit = () => {
-    setError(null);
-    verifyCode(0, "js", selectedExercise.id, selectedExercise.title).then(
-      () => {
-        console.log("Code vérifié");
-      },
-    );
+    fetchExercises();
+  }, [getExercices, router]);
+
+  const handleLogout = () => {
+    document.cookie = "SkillMatchToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    router.push('/');
   };
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  };
+
+  const getDaysLeft = (dateString) => {
+    const dueDate = new Date(dateString);
+    const currentDate = new Date();
+    const timeDiff = dueDate - currentDate;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return daysLeft;
+  };
+  
+  const getDifficultyLabel = (difficulty) => {
+    switch (difficulty) {
+      case 1: return "Facile";
+      case 2: return "Moyen";
+      case 3: return "Difficile";
+      default: return "Moyen";
+    }
+  };
+  
+  if (loading || isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl">Chargement des exercices...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className={"flex p-4 min-h-full w-full flex-col"}>
-      <div className={`flex h-[80%] max-h-[80%] w-full`}>
-        {/* Section de gauche : Détails de l'exercices */}
-        <div className={`flex flex-col w-[20%] p-4`}>
-          <h2>{selectedExercise?.title}</h2>
-          <Markdown>{selectedExercise?.markdown}</Markdown>
-        </div>
-
-        {/* Section de droite : Monaco Editor */}
-        <MonacoEditor
-          height="90%"
-          width={"80%"}
-          defaultLanguage="javascript"
-          value={code}
-          onChange={setCode}
-          theme="vs-dark"
-          options={{
-            minimap: { enabled: true },
-            fontSize: 14,
-            automaticLayout: true,
-          }}
-        />
-      </div>
-      {/* bouton de validation */}
-      <div className={"flex justify-end p-2"}>
-        <div className={"flex w-fit rounded-xl bg-gray-900 p-2"}>
-          <button onClick={handleCodeSubmit} className={"flex"}>
-            Soumettre mon code
-          </button>
-        </div>
-      </div>
-
-      {/* Liste des exercices */}
-      <div className={`flex h-[20%] w-full`}>
-        <div className={`flex flex-col w-[50%] p-4`}>
-          <h3>Liste des exercices</h3>
-          <ul
-            style={{
-              listStyleType: "none",
-              margin: 0,
-              padding: 0,
-            }}
-          >
-            {!isLoading &&
-              exercises?.map((exercise) => (
-                <li
-                  key={exercise.id}
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #eee",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s, color 0.2s",
-                  }}
-                  onClick={() => {
-                    setSelectedExercise(exercise);
-                    setCode(exercise.defaultCode);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f0f0f0";
-                    e.currentTarget.style.color = "black";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "inherit";
-                  }}
-                >
-                  {exercise.title}
-                </li>
-              ))}
-          </ul>
-        </div>
-        {!isLoading && (
-          <div className={`flex h-fit flex-col w-[50%] p-4`}>
-            {!error && isTesting && (
-              <p className={"text-green-500"}>Test en cours...</p>
-            )}
-            {error && (
-              <div className={"flex flex-col"}>
-                <p className={"text-red-500"}>
-                  entree: {JSON.parse(error)?.input}
-                </p>
-                <p className={"text-red-500"}>
-                  attendu: {JSON.parse(error)?.expected}
-                </p>
-                <p className={"text-red-500"}>
-                  recu: {JSON.parse(error)?.result}
-                </p>
-              </div>
-            )}
-
-            <h3>Liste des tests</h3>
-            <ul
-              style={{
-                listStyleType: "none",
-                margin: 0,
-                padding: 0,
-              }}
+    <div className="min-h-screen w-full bg-[#0a0a0a] text-[#ededed] flex flex-col">
+      {/* En-tête fixe */}
+      <header className="sticky top-0 z-10 bg-gray-800 shadow-lg py-4 w-full">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Exercices à compléter</h1>
+            <button 
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition"
             >
-              {selectedExercise?.test?.map((test) => (
-                <li
-                  key={`${selectedExercise.id}-${test.id}`}
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #eee",
-                  }}
-                  className={
-                    test?.passed
-                      ? "text-green-500"
-                      : test.passed !== undefined
-                        ? "text-red-500"
-                        : "text-white"
-                  }
-                >
-                  {test.title}
-                </li>
-              ))}
-            </ul>
+              Déconnexion
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      </header>
+      
+      {/* Conteneur principal centré */}
+      <main className="flex-1 flex justify-center items-start py-8">
+        <div className="max-w-6xl mx-auto px-6 w-full">
+          {exercises.length === 0 ? (
+            <div className="text-center py-12 text-gray-400 text-xl">
+              Aucun exercice disponible pour le moment
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+              {exercises.map(exercise => {
+                const daysLeft = exercise.dueDate ? getDaysLeft(exercise.dueDate) : null;
+                let dueDateClass = "text-blue-400 font-medium";
+                if (daysLeft !== null) {
+                  if (daysLeft < 0) {
+                    dueDateClass = "text-gray-500 font-medium";
+                  } else if (daysLeft <= 2) {
+                    dueDateClass = "text-red-400 font-bold";
+                  }
+                }
+                
+                const difficultyLabel = getDifficultyLabel(exercise.difficulty);
+                
+                return (
+                  <div 
+                    key={exercise.id} 
+                    className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer transform transition-all hover:-translate-y-1 hover:shadow-xl border border-gray-700 w-full"
+                    onClick={() => router.push(`/exercices/${exercise.id}`)}
+                  >
+                    <div className="p-5">
+                      <div className="text-sm text-gray-400 mb-2">{exercise.organization || "SkillMatch"}</div>
+                      <h3 className="text-xl font-bold mb-3">{exercise.title}</h3>
+                      <div className="flex justify-between items-end">
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold
+                          ${difficultyLabel === 'Facile' ? 'bg-green-900 text-green-300' : 
+                            difficultyLabel === 'Moyen' ? 'bg-yellow-900 text-yellow-300' : 
+                            'bg-red-900 text-red-300'}`}
+                        >
+                          {difficultyLabel}
+                        </span>
+                        {exercise.dueDate && (
+                          <div className="text-right">
+                            <div className="text-sm text-gray-400">
+                              Échéance: {formatDate(exercise.dueDate)}
+                            </div>
+                            <div className={dueDateClass}>
+                              {daysLeft < 0 
+                                ? "Expiré" 
+                                : `${daysLeft} jour${daysLeft !== 1 ? 's' : ''} restant${daysLeft !== 1 ? 's' : ''}`
+                              }
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

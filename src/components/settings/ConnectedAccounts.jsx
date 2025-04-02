@@ -32,11 +32,13 @@ const ConnectedAccounts = () => {
           className="flex items-center justify-between py-3"
         >
           <div className="flex gap-1">
-            <Image
-              src={account.icon}
-              alt="Social img"
-              className="size-6 object-cover rounded-full mr-2"
-            />
+          <Image
+            src={account.icon}
+            alt="Social img"
+            className="w-12 h-12 object-cover rounded-full mr-2" // Set width and height
+            width={48} // Optional: To ensure Next.js optimizes the image properly
+            height={48} // Optional: Same as above
+          />
             <span className="text-gray-300">{account.name}</span>
           </div>
           <button

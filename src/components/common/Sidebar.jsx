@@ -15,7 +15,7 @@ const SIDEBAR_ITEMS = [
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const url = useURL();
-  if (!url || url?.includes("/login")) return <></>;
+  if (!url || url?.includes("/login") || url?.includes("/exercices")) return <></>;
   return (
     <>
       <div className="w-20"></div>
