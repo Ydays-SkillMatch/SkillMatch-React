@@ -25,31 +25,9 @@ const Page = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <StatCard
-            name="Total Users"
-            icon={UsersIcon}
-            value={userStats.totalUsers}
-            color="#6366F1"
-          />
-          <StatCard
-            name="New Users Today"
-            icon={UserPlus}
-            value={userStats.newUsersToday}
-            color="#10B981"
-          />
-          <StatCard
-            name="Active Users"
-            icon={UserCheck}
-            value={userStats.activeUsers}
-            color="#F59E0B"
-          />
         </motion.div>
 
         <UsersTable />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          <UserGrowthChart />
-          <UserActivityHeatmap />
-        </div>
       </main>
     </div>
   );

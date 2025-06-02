@@ -15,14 +15,14 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 export default function ExercisePage({ params }) {
   const router = useRouter();
   const exerciseId = parseInt(params.id);
-  
+
   const [exercise, setExercise] = useState(null);
   const [showTestModal, setShowTestModal] = useState(false);
-  
+
   // Organisation et langage par défaut
   const orgId = 0;
   const language = "js";
-  
+
   const { getExercices, isLoading: isLoadingExercises } = useExercices();
   const {
     isLoading: isTesting,
@@ -48,20 +48,22 @@ export default function ExercisePage({ params }) {
       try {
         const data = await getExercices(orgId, language);
         if (data && data.exercices) {
-          const selectedExercise = data.exercices.find(ex => ex.id === exerciseId);
+          const selectedExercise = data.exercices.find(
+            (ex) => ex.id === exerciseId,
+          );
           if (selectedExercise) {
             setExercise(selectedExercise);
             setCode(selectedExercise.defaultCode || "");
           } else {
             // Exercice non trouvé, rediriger vers la liste
-            router.push('/exercices');
+            router.push("/exercices");
           }
         }
       } catch (err) {
         console.error("Erreur lors du chargement de l'exercice:", err);
       }
     };
-    
+
     fetchExercise();
   }, [exerciseId, getExercices, router, setCode]);
 
@@ -96,7 +98,7 @@ export default function ExercisePage({ params }) {
   const handleCodeSubmit = () => {
     setError(null);
     setShowTestModal(true);
-    
+
     // Obtenir le nom de la fonction à partir du code
     const functionNameMatch = code.match(/function\s+(\w+)/);
     const functionName = functionNameMatch ? functionNameMatch[1] : "FizzBuzz"; // Nom par défaut
@@ -118,7 +120,7 @@ export default function ExercisePage({ params }) {
   if (isLoadingExercises || !exercise) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-        <div className="text-xl">Chargement de l'exercice...</div>
+        <div className="text-xl">Chargement de l&apos;exercice...</div>
       </div>
     );
   }
@@ -127,9 +129,9 @@ export default function ExercisePage({ params }) {
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <header className="bg-gray-800 p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <button 
+          <button
             className="text-gray-300 hover:text-white"
-            onClick={() => router.push('/exercices')}
+            onClick={() => router.push("/exercices")}
           >
             &larr; Retour aux exercices
           </button>
@@ -162,7 +164,7 @@ export default function ExercisePage({ params }) {
             }}
           />
           <div className="bg-gray-800 p-4 flex justify-end">
-            <button 
+            <button
               onClick={handleCodeSubmit}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition-colors"
               disabled={isTesting}
@@ -185,8 +187,8 @@ export default function ExercisePage({ params }) {
                   test?.passed === true
                     ? "bg-green-900 bg-opacity-30 text-green-400"
                     : test.passed === false
-                    ? "bg-red-900 bg-opacity-30 text-red-400"
-                    : "bg-gray-900 text-gray-300"
+                      ? "bg-red-900 bg-opacity-30 text-red-400"
+                      : "bg-gray-900 text-gray-300"
                 }`}
               >
                 <div className="flex items-center">
@@ -214,14 +216,14 @@ export default function ExercisePage({ params }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 max-w-md w-full text-center shadow-xl">
             <h3 className="text-xl font-bold mb-4">Test de votre code</h3>
-            
+
             {isTesting && !error && !result && (
               <div className="flex flex-col items-center py-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
                 <p className="text-gray-300">Exécution des tests...</p>
               </div>
             )}
-            
+
             {(result || error) && (
               <div className="mt-4">
                 {error ? (
@@ -235,13 +237,15 @@ export default function ExercisePage({ params }) {
                 ) : result?.success ? (
                   <div className="bg-green-900 bg-opacity-30 p-4 rounded-lg">
                     <div className="text-5xl mb-4 text-green-500">✓</div>
-                    <p className="text-green-400">Tous les tests ont réussi !</p>
+                    <p className="text-green-400">
+                      Tous les tests ont réussi !
+                    </p>
                   </div>
                 ) : null}
               </div>
             )}
-            
-            <button 
+
+            <button
               className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition"
               onClick={closeTestModal}
             >

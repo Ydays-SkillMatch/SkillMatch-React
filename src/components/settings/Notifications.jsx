@@ -26,13 +26,6 @@ const Notifications = () => {
           setNotifications({ ...notifications, email: !notifications.email })
         }
       />
-      <ToggleSwitch
-        label={"SMS Notifications"}
-        isOn={notifications.sms}
-        onToggle={() =>
-          setNotifications({ ...notifications, sms: !notifications.sms })
-        }
-      />
     </SettingSection>
   );
 };

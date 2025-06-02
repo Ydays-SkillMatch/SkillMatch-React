@@ -23,12 +23,12 @@ const useCodeVerification = () => {
       setIsLoading(true);
       setError(null);
       setIsSubmitted(true);
-      
+
       try {
         // Définir un timeout pour la requête (30 secondes)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
-        
+
         const response = await fetch(
           `/api/exercices/${orgId}/${language}/${exerciseId}`,
           {
@@ -37,10 +37,10 @@ const useCodeVerification = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ code, functionName }),
-            signal: controller.signal
+            signal: controller.signal,
           },
         );
-        
+
         clearTimeout(timeoutId);
         const data = await response.json();
 
@@ -83,7 +83,7 @@ const useCodeVerification = () => {
     verifyCode,
     setResult,
     isSubmitted,
-    resetVerification
+    resetVerification,
   };
 };
 

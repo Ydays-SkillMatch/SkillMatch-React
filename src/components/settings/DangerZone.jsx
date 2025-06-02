@@ -1,6 +1,18 @@
 import { motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
 
+// Fonction utilitaire pour supprimer tous les cookies
+const deleteAllCookies = () => {
+  const cookies = document.cookie.split("; ");
+  for (let c of cookies) {
+    const eqPos = c.indexOf("=");
+    const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+  }
+  // Recharge la page après suppression des cookies
+  window.location.reload();
+};
+
 const DangerZone = () => {
   return (
     <motion.div
@@ -13,14 +25,11 @@ const DangerZone = () => {
         <Trash2 className="text-red-400 mr-3" size={24} />
         <h2 className="text-xl font-semibold text-gray-100">Danger Zone</h2>
       </div>
-      <p className="text-gray-300 mb-4">
-        Permanently delete your account and all of your content.
-      </p>
       <button
-        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded 
-      transition duration-200"
+        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-200"
+        onClick={deleteAllCookies}
       >
-        Delete Account
+        Log Out 
       </button>
     </motion.div>
   );

@@ -14,7 +14,6 @@ const Page = () => {
         <Profile />
         <Notifications />
         <Security />
-        <ConnectedAccounts />
         <DangerZone />
       </main>
     </div>
