@@ -1,11 +1,14 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import Sidebar from "@/components/common/Sidebar";
+import TokenRefresher from "@/components/common/tokenRefresher"; // <-- ICI, le bon import
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -21,8 +24,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen h-fit w-screen bg-gray-800 overflow-x-hidden`}
       >
+        <TokenRefresher />
+        <Sidebar />
         {children}
       </body>
     </html>
